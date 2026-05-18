@@ -91,8 +91,8 @@ const Rooms = () => {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
       {/* ── Page header ── */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-slate-800 mb-1">Browse Rooms</h1>
-        <p className="text-slate-500 text-sm">
+        <h1 className="page-title">Browse Rooms</h1>
+        <p className="page-subtitle">
           {loading ? 'Loading available spaces…' : `${rooms.length} room${rooms.length !== 1 ? 's' : ''} available`}
         </p>
       </div>
@@ -110,7 +110,7 @@ const Rooms = () => {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search by name or description…"
-            className="w-full pl-9 pr-4 py-2.5 rounded-lg border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition bg-white"
+            className="form-input pl-9"
           />
         </div>
       </div>

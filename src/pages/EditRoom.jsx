@@ -23,11 +23,6 @@ const AMENITY_OPTIONS = [
   'Snack Bar',
 ]
 
-const inputClass =
-  'w-full px-4 py-2.5 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm transition bg-white'
-
-const labelClass = 'block text-sm font-medium text-slate-700 mb-1.5'
-
 // ── Validation ────────────────────────────────────────────────────────────────
 const validate = (form) => {
   if (!form.name.trim()) return 'Room name is required.'
@@ -156,15 +151,15 @@ const EditRoom = () => {
           </svg>
           Back to Room
         </Link>
-        <h1 className="text-3xl font-bold text-slate-800 mb-1">Edit Room</h1>
-        <p className="text-slate-500 text-sm">Update your listing details below.</p>
+        <h1 className="page-title">Edit Room</h1>
+        <p className="page-subtitle">Update your listing details below.</p>
       </div>
 
-      <form onSubmit={handleSubmit} className="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 sm:p-8 space-y-6">
+      <form onSubmit={handleSubmit} className="card p-6 sm:p-8 space-y-6">
 
         {/* ── Room name ── */}
         <div>
-          <label htmlFor="edit-name" className={labelClass}>Room Name <span className="text-red-400">*</span></label>
+          <label htmlFor="edit-name" className="form-label">Room Name <span className="text-red-400">*</span></label>
           <input
             id="edit-name"
             name="name"
@@ -172,13 +167,13 @@ const EditRoom = () => {
             onChange={handleChange}
             required
             placeholder="e.g. The Quiet Corner"
-            className={inputClass}
+            className="form-input"
           />
         </div>
 
         {/* ── Description ── */}
         <div>
-          <label htmlFor="edit-description" className={labelClass}>Description <span className="text-red-400">*</span></label>
+          <label htmlFor="edit-description" className="form-label">Description <span className="text-red-400">*</span></label>
           <textarea
             id="edit-description"
             name="description"
@@ -186,14 +181,14 @@ const EditRoom = () => {
             onChange={handleChange}
             rows={4}
             required
-            className={`${inputClass} resize-none`}
+            className="form-input resize-none"
           />
           <p className="text-xs text-slate-400 mt-1">{form.description.length} characters</p>
         </div>
 
         {/* ── Image URL ── */}
         <div>
-          <label htmlFor="edit-image" className={labelClass}>Image URL</label>
+          <label htmlFor="edit-image" className="form-label">Image URL</label>
           <input
             id="edit-image"
             name="image"
@@ -201,7 +196,7 @@ const EditRoom = () => {
             value={form.image}
             onChange={handleChange}
             placeholder="https://example.com/room-photo.jpg"
-            className={inputClass}
+            className="form-input"
           />
           {/* Live image preview */}
           {form.image && /^https?:\/\/.+/.test(form.image) && (
@@ -217,7 +212,7 @@ const EditRoom = () => {
         {/* ── Floor / Capacity / Rate ── */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div>
-            <label htmlFor="edit-floor" className={labelClass}>Floor <span className="text-red-400">*</span></label>
+            <label htmlFor="edit-floor" className="form-label">Floor <span className="text-red-400">*</span></label>
             <input
               id="edit-floor"
               name="floor"
@@ -226,11 +221,11 @@ const EditRoom = () => {
               value={form.floor}
               onChange={handleChange}
               required
-              className={inputClass}
+              className="form-input"
             />
           </div>
           <div>
-            <label htmlFor="edit-capacity" className={labelClass}>Capacity <span className="text-red-400">*</span></label>
+            <label htmlFor="edit-capacity" className="form-label">Capacity <span className="text-red-400">*</span></label>
             <input
               id="edit-capacity"
               name="capacity"
@@ -239,11 +234,11 @@ const EditRoom = () => {
               value={form.capacity}
               onChange={handleChange}
               required
-              className={inputClass}
+              className="form-input"
             />
           </div>
           <div>
-            <label htmlFor="edit-rate" className={labelClass}>Hourly Rate ($) <span className="text-red-400">*</span></label>
+            <label htmlFor="edit-rate" className="form-label">Hourly Rate ($) <span className="text-red-400">*</span></label>
             <input
               id="edit-rate"
               name="hourlyRate"
@@ -252,14 +247,14 @@ const EditRoom = () => {
               value={form.hourlyRate}
               onChange={handleChange}
               required
-              className={inputClass}
+              className="form-input"
             />
           </div>
         </div>
 
         {/* ── Amenities checkboxes ── */}
         <div>
-          <p className={labelClass}>Amenities</p>
+          <p className="form-label">Amenities</p>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
             {AMENITY_OPTIONS.map((amenity) => {
               const checked = form.amenities.includes(amenity)
@@ -291,14 +286,14 @@ const EditRoom = () => {
             id="edit-room-submit"
             type="submit"
             disabled={loading}
-            className="bg-indigo-600 text-white font-semibold px-8 py-2.5 rounded-lg hover:bg-indigo-700 transition disabled:opacity-60 disabled:cursor-not-allowed flex items-center gap-2"
+            className="btn-primary flex-1 sm:flex-none sm:w-48"
           >
             {loading ? <LoadingSpinner size="sm" className="border-white/30 border-t-white" /> : null}
             {loading ? 'Saving…' : 'Save Changes'}
           </button>
           <Link
             to={`/rooms/${id}`}
-            className="border border-slate-200 text-slate-600 font-medium px-6 py-2.5 rounded-lg hover:bg-slate-50 transition text-sm inline-flex items-center"
+            className="btn-secondary px-6"
           >
             Cancel
           </Link>

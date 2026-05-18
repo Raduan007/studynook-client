@@ -33,11 +33,6 @@ const EMPTY_FORM = {
   amenities: [],
 }
 
-const inputClass =
-  'w-full px-4 py-2.5 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm transition bg-white'
-
-const labelClass = 'block text-sm font-medium text-slate-700 mb-1.5'
-
 // ── Validation ────────────────────────────────────────────────────────────────
 const validate = (form) => {
   if (!form.name.trim()) return 'Room name is required.'
@@ -106,15 +101,15 @@ const AddRoom = () => {
     <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-slate-800 mb-1">Add a Room</h1>
-        <p className="text-slate-500 text-sm">List your study space and start accepting bookings.</p>
+        <h1 className="page-title">Add a Room</h1>
+        <p className="page-subtitle">List your study space and start accepting bookings.</p>
       </div>
 
-      <form onSubmit={handleSubmit} className="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 sm:p-8 space-y-6">
+      <form onSubmit={handleSubmit} className="card p-6 sm:p-8 space-y-6">
 
         {/* ── Room name ── */}
         <div>
-          <label htmlFor="add-name" className={labelClass}>Room Name <span className="text-red-400">*</span></label>
+          <label htmlFor="add-name" className="form-label">Room Name <span className="text-red-400">*</span></label>
           <input
             id="add-name"
             name="name"
@@ -122,13 +117,13 @@ const AddRoom = () => {
             onChange={handleChange}
             required
             placeholder="e.g. The Quiet Corner"
-            className={inputClass}
+            className="form-input"
           />
         </div>
 
         {/* ── Description ── */}
         <div>
-          <label htmlFor="add-description" className={labelClass}>Description <span className="text-red-400">*</span></label>
+          <label htmlFor="add-description" className="form-label">Description <span className="text-red-400">*</span></label>
           <textarea
             id="add-description"
             name="description"
@@ -137,14 +132,14 @@ const AddRoom = () => {
             rows={4}
             required
             placeholder="Describe the room — ambiance, rules, nearby facilities… (min 20 chars)"
-            className={`${inputClass} resize-none`}
+            className="form-input resize-none"
           />
           <p className="text-xs text-slate-400 mt-1">{form.description.length} characters</p>
         </div>
 
         {/* ── Image URL ── */}
         <div>
-          <label htmlFor="add-image" className={labelClass}>Image URL</label>
+          <label htmlFor="add-image" className="form-label">Image URL</label>
           <input
             id="add-image"
             name="image"
@@ -152,14 +147,14 @@ const AddRoom = () => {
             value={form.image}
             onChange={handleChange}
             placeholder="https://example.com/room-photo.jpg"
-            className={inputClass}
+            className="form-input"
           />
         </div>
 
         {/* ── Floor / Capacity / Rate ── */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div>
-            <label htmlFor="add-floor" className={labelClass}>Floor <span className="text-red-400">*</span></label>
+            <label htmlFor="add-floor" className="form-label">Floor <span className="text-red-400">*</span></label>
             <input
               id="add-floor"
               name="floor"
@@ -169,11 +164,11 @@ const AddRoom = () => {
               onChange={handleChange}
               required
               placeholder="e.g. 2"
-              className={inputClass}
+              className="form-input"
             />
           </div>
           <div>
-            <label htmlFor="add-capacity" className={labelClass}>Capacity <span className="text-red-400">*</span></label>
+            <label htmlFor="add-capacity" className="form-label">Capacity <span className="text-red-400">*</span></label>
             <input
               id="add-capacity"
               name="capacity"
@@ -183,11 +178,11 @@ const AddRoom = () => {
               onChange={handleChange}
               required
               placeholder="e.g. 6"
-              className={inputClass}
+              className="form-input"
             />
           </div>
           <div>
-            <label htmlFor="add-rate" className={labelClass}>Hourly Rate ($) <span className="text-red-400">*</span></label>
+            <label htmlFor="add-rate" className="form-label">Hourly Rate ($) <span className="text-red-400">*</span></label>
             <input
               id="add-rate"
               name="hourlyRate"
@@ -197,14 +192,14 @@ const AddRoom = () => {
               onChange={handleChange}
               required
               placeholder="e.g. 10"
-              className={inputClass}
+              className="form-input"
             />
           </div>
         </div>
 
         {/* ── Amenities checkboxes ── */}
         <div>
-          <p className={labelClass}>Amenities</p>
+          <p className="form-label">Amenities</p>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
             {AMENITY_OPTIONS.map((amenity) => {
               const checked = form.amenities.includes(amenity)
@@ -236,7 +231,7 @@ const AddRoom = () => {
             id="add-room-submit"
             type="submit"
             disabled={loading}
-            className="bg-indigo-600 text-white font-semibold px-8 py-2.5 rounded-lg hover:bg-indigo-700 transition disabled:opacity-60 disabled:cursor-not-allowed flex items-center gap-2"
+            className="btn-primary flex-1 sm:flex-none sm:w-48"
           >
             {loading ? <LoadingSpinner size="sm" className="border-white/30 border-t-white" /> : null}
             {loading ? 'Publishing…' : 'Publish Listing'}
@@ -245,7 +240,7 @@ const AddRoom = () => {
             type="button"
             onClick={() => setForm(EMPTY_FORM)}
             disabled={loading}
-            className="border border-slate-200 text-slate-600 font-medium px-6 py-2.5 rounded-lg hover:bg-slate-50 transition disabled:opacity-50"
+            className="btn-secondary px-6"
           >
             Reset
           </button>

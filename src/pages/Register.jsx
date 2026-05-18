@@ -106,7 +106,7 @@ const Register = () => {
 
   return (
     <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center px-4 py-12 bg-slate-50">
-      <div className="w-full max-w-md bg-white rounded-2xl shadow-sm border border-slate-100 p-8">
+      <div className="card w-full max-w-md p-8">
         {/* Header */}
         <div className="text-center mb-8">
           <div className="w-12 h-12 rounded-xl bg-indigo-600 flex items-center justify-center mx-auto mb-4">
@@ -123,7 +123,7 @@ const Register = () => {
           type="button"
           onClick={handleGoogle}
           disabled={googleLoading || loading}
-          className="w-full flex items-center justify-center gap-3 border border-slate-200 rounded-lg px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 transition disabled:opacity-60 disabled:cursor-not-allowed mb-5"
+          className="btn-secondary w-full py-2.5 mb-5"
         >
           {googleLoading ? <LoadingSpinner size="sm" /> : <GoogleIcon />}
           Continue with Google
@@ -139,7 +139,7 @@ const Register = () => {
         {/* Registration form */}
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
-            <label htmlFor="reg-name" className="block text-sm font-medium text-slate-700 mb-1.5">
+            <label htmlFor="reg-name" className="form-label">
               Full Name
             </label>
             <input
@@ -150,12 +150,12 @@ const Register = () => {
               onChange={handleChange}
               required
               placeholder="John Doe"
-              className="w-full px-4 py-2.5 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm transition"
+              className="form-input"
             />
           </div>
 
           <div>
-            <label htmlFor="reg-email" className="block text-sm font-medium text-slate-700 mb-1.5">
+            <label htmlFor="reg-email" className="form-label">
               Email
             </label>
             <input
@@ -166,12 +166,12 @@ const Register = () => {
               onChange={handleChange}
               required
               placeholder="you@example.com"
-              className="w-full px-4 py-2.5 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm transition"
+              className="form-input"
             />
           </div>
 
           <div>
-            <label htmlFor="reg-password" className="block text-sm font-medium text-slate-700 mb-1.5">
+            <label htmlFor="reg-password" className="form-label">
               Password
             </label>
             <input
@@ -182,7 +182,7 @@ const Register = () => {
               onChange={handleChange}
               required
               placeholder="Min. 6 characters"
-              className="w-full px-4 py-2.5 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm transition"
+              className="form-input"
             />
             {/* Live password hints */}
             <PasswordHints password={form.password} />
@@ -192,7 +192,7 @@ const Register = () => {
             type="submit"
             id="register-submit"
             disabled={loading || googleLoading}
-            className="w-full bg-indigo-600 text-white font-semibold py-2.5 rounded-lg hover:bg-indigo-700 transition disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            className="btn-primary w-full py-2.5"
           >
             {loading ? <LoadingSpinner size="sm" className="border-white/30 border-t-white" /> : 'Create Account'}
           </button>
