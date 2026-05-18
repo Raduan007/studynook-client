@@ -14,6 +14,7 @@ import Register from './pages/Register'
 import AddRoom from './pages/AddRoom'
 import MyListings from './pages/MyListings'
 import MyBookings from './pages/MyBookings'
+import RoomDetails from './pages/RoomDetails'
 import NotFound from './pages/NotFound'
 
 const App = () => {
@@ -35,6 +36,7 @@ const App = () => {
           <Route element={<PublicLayout />}>
             <Route path="/" element={<Home />} />
             <Route path="/rooms" element={<Rooms />} />
+            <Route path="/rooms/:id" element={<RoomDetails />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
           </Route>
