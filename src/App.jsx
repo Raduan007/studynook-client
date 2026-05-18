@@ -15,6 +15,7 @@ import AddRoom from './pages/AddRoom'
 import MyListings from './pages/MyListings'
 import MyBookings from './pages/MyBookings'
 import RoomDetails from './pages/RoomDetails'
+import EditRoom from './pages/EditRoom'
 import NotFound from './pages/NotFound'
 
 const App = () => {
@@ -44,6 +45,7 @@ const App = () => {
           {/* Private routes */}
           <Route element={<PrivateLayout />}>
             <Route path="/add-room" element={<AddRoom />} />
+            <Route path="/rooms/:id/edit" element={<EditRoom />} />
             <Route path="/my-listings" element={<MyListings />} />
             <Route path="/my-bookings" element={<MyBookings />} />
           </Route>

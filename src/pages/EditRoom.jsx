@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { useNavigate, useParams, Link } from 'react-router-dom'
 import axios from 'axios'
 import toast from 'react-hot-toast'
 import { useAuth } from '../contexts/AuthContext'
@@ -23,16 +23,6 @@ const AMENITY_OPTIONS = [
   'Snack Bar',
 ]
 
-const EMPTY_FORM = {
-  name: '',
-  description: '',
-  image: '',
-  floor: '',
-  capacity: '',
-  hourlyRate: '',
-  amenities: [],
-}
-
 const inputClass =
   'w-full px-4 py-2.5 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm transition bg-white'
 
@@ -43,7 +33,7 @@ const validate = (form) => {
   if (!form.name.trim()) return 'Room name is required.'
   if (!form.description.trim()) return 'Description is required.'
   if (form.description.trim().length < 20) return 'Description must be at least 20 characters.'
-  if (!form.floor) return 'Floor number is required.'
+  if (!form.floor && form.floor !== 0) return 'Floor number is required.'
   if (!form.capacity || Number(form.capacity) < 1) return 'Capacity must be at least 1.'
   if (!form.hourlyRate || Number(form.hourlyRate) < 1) return 'Hourly rate must be at least $1.'
   if (form.image && !/^https?:\/\/.+/.test(form.image)) return 'Image must be a valid URL starting with http(s).'
@@ -51,13 +41,40 @@ const validate = (form) => {
 }
 
 // ── Component ─────────────────────────────────────────────────────────────────
-const AddRoom = () => {
-  useTitle('Add Room')
+const EditRoom = () => {
+  const { id } = useParams()
   const navigate = useNavigate()
   const { user } = useAuth()
 
-  const [form, setForm] = useState(EMPTY_FORM)
+  const [form, setForm] = useState(null)       // null = still loading
+  const [fetchError, setFetchError] = useState(null)
   const [loading, setLoading] = useState(false)
+
+  useTitle(form?.name ? `Edit — ${form.name}` : 'Edit Room')
+
+  // ── Fetch existing room data ──────────────────────────────────────────────
+  useEffect(() => {
+    let cancelled = false
+    axios
+      .get(`${API}/rooms/${id}`)
+      .then(({ data }) => {
+        if (cancelled) return
+        setForm({
+          name: data.name || '',
+          description: data.description || '',
+          image: data.image || '',
+          floor: data.floor ?? '',
+          capacity: data.capacity ?? '',
+          hourlyRate: data.hourlyRate ?? '',
+          amenities: Array.isArray(data.amenities) ? data.amenities : [],
+        })
+      })
+      .catch((err) => {
+        if (!cancelled) setFetchError(err.response?.data?.message || err.message || 'Failed to load room')
+      })
+
+    return () => { cancelled = true }
+  }, [id])
 
   // ── Field handlers ────────────────────────────────────────────────────────
   const handleChange = (e) =>
@@ -88,35 +105,68 @@ const AddRoom = () => {
         floor: Number(form.floor),
         capacity: Number(form.capacity),
         hourlyRate: Number(form.hourlyRate),
-        ownerEmail: user.email,
-        ownerUid: user.uid,
-        ownerName: user.displayName,
       }
-      const { data } = await axios.post(`${API}/rooms`, payload)
-      toast.success('Room listed successfully!')
-      navigate(`/rooms/${data.id || data._id || ''}`)
+      await axios.put(`${API}/rooms/${id}`, payload)
+      toast.success('Room updated successfully!')
+      navigate(`/rooms/${id}`)
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Failed to add room. Please try again.')
+      toast.error(err.response?.data?.message || 'Update failed. Please try again.')
     } finally {
       setLoading(false)
     }
+  }
+
+  // ── Loading (fetching room) ────────────────────────────────────────────────
+  if (!form && !fetchError) {
+    return (
+      <div className="min-h-[50vh] flex items-center justify-center">
+        <LoadingSpinner size="lg" />
+      </div>
+    )
+  }
+
+  // ── Fetch error ───────────────────────────────────────────────────────────
+  if (fetchError) {
+    return (
+      <div className="min-h-[50vh] flex flex-col items-center justify-center text-center px-4 gap-4">
+        <div className="w-14 h-14 rounded-full bg-red-50 flex items-center justify-center">
+          <svg className="w-7 h-7 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+          </svg>
+        </div>
+        <div>
+          <p className="font-semibold text-slate-700 mb-1">Could not load room</p>
+          <p className="text-sm text-slate-500">{fetchError}</p>
+        </div>
+        <Link to="/my-listings" className="text-sm text-indigo-600 hover:underline">← My Listings</Link>
+      </div>
+    )
   }
 
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-slate-800 mb-1">Add a Room</h1>
-        <p className="text-slate-500 text-sm">List your study space and start accepting bookings.</p>
+        <Link
+          to={`/rooms/${id}`}
+          className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-indigo-600 transition mb-3"
+        >
+          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+          </svg>
+          Back to Room
+        </Link>
+        <h1 className="text-3xl font-bold text-slate-800 mb-1">Edit Room</h1>
+        <p className="text-slate-500 text-sm">Update your listing details below.</p>
       </div>
 
       <form onSubmit={handleSubmit} className="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 sm:p-8 space-y-6">
 
         {/* ── Room name ── */}
         <div>
-          <label htmlFor="add-name" className={labelClass}>Room Name <span className="text-red-400">*</span></label>
+          <label htmlFor="edit-name" className={labelClass}>Room Name <span className="text-red-400">*</span></label>
           <input
-            id="add-name"
+            id="edit-name"
             name="name"
             value={form.name}
             onChange={handleChange}
@@ -128,15 +178,14 @@ const AddRoom = () => {
 
         {/* ── Description ── */}
         <div>
-          <label htmlFor="add-description" className={labelClass}>Description <span className="text-red-400">*</span></label>
+          <label htmlFor="edit-description" className={labelClass}>Description <span className="text-red-400">*</span></label>
           <textarea
-            id="add-description"
+            id="edit-description"
             name="description"
             value={form.description}
             onChange={handleChange}
             rows={4}
             required
-            placeholder="Describe the room — ambiance, rules, nearby facilities… (min 20 chars)"
             className={`${inputClass} resize-none`}
           />
           <p className="text-xs text-slate-400 mt-1">{form.description.length} characters</p>
@@ -144,9 +193,9 @@ const AddRoom = () => {
 
         {/* ── Image URL ── */}
         <div>
-          <label htmlFor="add-image" className={labelClass}>Image URL</label>
+          <label htmlFor="edit-image" className={labelClass}>Image URL</label>
           <input
-            id="add-image"
+            id="edit-image"
             name="image"
             type="url"
             value={form.image}
@@ -154,49 +203,55 @@ const AddRoom = () => {
             placeholder="https://example.com/room-photo.jpg"
             className={inputClass}
           />
+          {/* Live image preview */}
+          {form.image && /^https?:\/\/.+/.test(form.image) && (
+            <img
+              src={form.image}
+              alt="preview"
+              className="mt-3 w-full max-h-48 object-cover rounded-lg border border-slate-100"
+              onError={(e) => { e.currentTarget.style.display = 'none' }}
+            />
+          )}
         </div>
 
         {/* ── Floor / Capacity / Rate ── */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div>
-            <label htmlFor="add-floor" className={labelClass}>Floor <span className="text-red-400">*</span></label>
+            <label htmlFor="edit-floor" className={labelClass}>Floor <span className="text-red-400">*</span></label>
             <input
-              id="add-floor"
+              id="edit-floor"
               name="floor"
               type="number"
               min="0"
               value={form.floor}
               onChange={handleChange}
               required
-              placeholder="e.g. 2"
               className={inputClass}
             />
           </div>
           <div>
-            <label htmlFor="add-capacity" className={labelClass}>Capacity <span className="text-red-400">*</span></label>
+            <label htmlFor="edit-capacity" className={labelClass}>Capacity <span className="text-red-400">*</span></label>
             <input
-              id="add-capacity"
+              id="edit-capacity"
               name="capacity"
               type="number"
               min="1"
               value={form.capacity}
               onChange={handleChange}
               required
-              placeholder="e.g. 6"
               className={inputClass}
             />
           </div>
           <div>
-            <label htmlFor="add-rate" className={labelClass}>Hourly Rate ($) <span className="text-red-400">*</span></label>
+            <label htmlFor="edit-rate" className={labelClass}>Hourly Rate ($) <span className="text-red-400">*</span></label>
             <input
-              id="add-rate"
+              id="edit-rate"
               name="hourlyRate"
               type="number"
               min="1"
               value={form.hourlyRate}
               onChange={handleChange}
               required
-              placeholder="e.g. 10"
               className={inputClass}
             />
           </div>
@@ -233,26 +288,24 @@ const AddRoom = () => {
         {/* ── Actions ── */}
         <div className="flex gap-3 pt-2">
           <button
-            id="add-room-submit"
+            id="edit-room-submit"
             type="submit"
             disabled={loading}
             className="bg-indigo-600 text-white font-semibold px-8 py-2.5 rounded-lg hover:bg-indigo-700 transition disabled:opacity-60 disabled:cursor-not-allowed flex items-center gap-2"
           >
             {loading ? <LoadingSpinner size="sm" className="border-white/30 border-t-white" /> : null}
-            {loading ? 'Publishing…' : 'Publish Listing'}
+            {loading ? 'Saving…' : 'Save Changes'}
           </button>
-          <button
-            type="button"
-            onClick={() => setForm(EMPTY_FORM)}
-            disabled={loading}
-            className="border border-slate-200 text-slate-600 font-medium px-6 py-2.5 rounded-lg hover:bg-slate-50 transition disabled:opacity-50"
+          <Link
+            to={`/rooms/${id}`}
+            className="border border-slate-200 text-slate-600 font-medium px-6 py-2.5 rounded-lg hover:bg-slate-50 transition text-sm inline-flex items-center"
           >
-            Reset
-          </button>
+            Cancel
+          </Link>
         </div>
       </form>
     </div>
   )
 }
 
-export default AddRoom
+export default EditRoom
