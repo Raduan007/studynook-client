@@ -103,7 +103,7 @@ const BookingCard = ({ booking, onCancelClick }) => {
   const cancellable = canCancel(booking.status)
 
   return (
-    <div className="bg-white border border-slate-100 rounded-2xl shadow-sm overflow-hidden flex flex-col sm:flex-row">
+    <div className="card overflow-hidden flex flex-col sm:flex-row">
       {/* Room image */}
       <div className="shrink-0 w-full sm:w-36 h-36 sm:h-auto bg-slate-100 relative">
         {booking.roomImage ? (
@@ -299,8 +299,8 @@ const MyBookings = () => {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-slate-800 mb-1">My Bookings</h1>
-          <p className="text-slate-500 text-sm">Track and manage all your study room reservations.</p>
+          <h1 className="page-title">My Bookings</h1>
+          <p className="page-subtitle">Track and manage all your study room reservations.</p>
         </div>
 
         {/* API Error banner */}

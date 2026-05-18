@@ -85,7 +85,7 @@ const ListingCard = ({ room, onDeleteClick }) => {
   const bookingCount = room.bookingCount ?? room.totalBookings ?? 0
 
   return (
-    <div className="bg-white border border-slate-100 rounded-2xl shadow-sm overflow-hidden flex flex-col sm:flex-row">
+    <div className="card overflow-hidden flex flex-col sm:flex-row">
       {/* Image */}
       <div className="shrink-0 w-full sm:w-40 h-40 sm:h-auto bg-slate-100">
         {room.image ? (
@@ -268,8 +268,8 @@ const MyListings = () => {
         {/* Header */}
         <div className="flex items-start justify-between gap-4 flex-wrap mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-slate-800 mb-1">My Listings</h1>
-            <p className="text-slate-500 text-sm">
+            <h1 className="page-title">My Listings</h1>
+            <p className="page-subtitle">
               {rooms.length > 0
                 ? `${rooms.length} room${rooms.length !== 1 ? 's' : ''} listed`
                 : 'Manage the study rooms you\'ve listed.'}

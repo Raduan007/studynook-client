@@ -214,10 +214,10 @@ const Home = () => {
           {/* Header */}
           <div className="flex items-end justify-between gap-4 mb-10">
             <div>
-              <h2 className="text-2xl sm:text-3xl font-bold text-slate-800">
+              <h2 className="section-title">
                 Latest Rooms
               </h2>
-              <p className="text-slate-500 mt-1 text-sm sm:text-base">
+              <p className="section-subtitle mt-1">
                 Freshly listed spaces ready to book.
               </p>
             </div>
@@ -261,10 +261,10 @@ const Home = () => {
       <section id="why-studynook" className="bg-slate-50 border-y border-slate-100 py-16 sm:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-2xl sm:text-3xl font-bold text-slate-800 mb-3">
+            <h2 className="section-title mb-3">
               Why Choose StudyNook?
             </h2>
-            <p className="text-slate-500 max-w-lg mx-auto text-sm sm:text-base">
+            <p className="section-subtitle max-w-lg mx-auto">
               Everything you need to find the perfect environment for deep work and
               focused learning.
             </p>
@@ -291,10 +291,10 @@ const Home = () => {
       <section id="how-it-works" className="py-16 sm:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-2xl sm:text-3xl font-bold text-slate-800 mb-3">
+            <h2 className="section-title mb-3">
               How Booking Works
             </h2>
-            <p className="text-slate-500 max-w-lg mx-auto text-sm sm:text-base">
+            <p className="section-subtitle max-w-lg mx-auto">
               Getting your study room is quick and painless — just four simple steps.
             </p>
           </div>

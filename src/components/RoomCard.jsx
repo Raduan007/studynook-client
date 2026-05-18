@@ -16,7 +16,7 @@ const RoomCard = ({ room }) => {
   const roomId = id || _id
 
   return (
-    <article className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden flex flex-col h-full">
+    <article className="card-lift overflow-hidden flex flex-col h-full">
       {/* Image */}
       <div className="relative w-full aspect-video overflow-hidden bg-slate-100 shrink-0">
         {image ? (
