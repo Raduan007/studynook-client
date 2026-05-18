@@ -39,6 +39,14 @@ const Navbar = () => {
         : 'text-slate-600 hover:text-indigo-600'
     }`
 
+  // Mobile links have larger tap targets
+  const mobileNavLinkClass = ({ isActive }) =>
+    `block py-2.5 text-sm font-medium transition-colors duration-200 border-b border-slate-50 ${
+      isActive
+        ? 'text-indigo-600'
+        : 'text-slate-600 hover:text-indigo-600'
+    }`
+
   const publicLinks = (
     <>
       <NavLink to="/" className={navLinkClass} onClick={() => setMenuOpen(false)}>
@@ -47,6 +55,13 @@ const Navbar = () => {
       <NavLink to="/rooms" className={navLinkClass} onClick={() => setMenuOpen(false)}>
         Rooms
       </NavLink>
+    </>
+  )
+
+  const publicLinksMobile = (
+    <>
+      <NavLink to="/" className={mobileNavLinkClass} onClick={() => setMenuOpen(false)}>Home</NavLink>
+      <NavLink to="/rooms" className={mobileNavLinkClass} onClick={() => setMenuOpen(false)}>Rooms</NavLink>
     </>
   )
 
@@ -64,10 +79,18 @@ const Navbar = () => {
     </>
   )
 
+  const privateLinksMobile = (
+    <>
+      <NavLink to="/add-room" className={mobileNavLinkClass} onClick={() => setMenuOpen(false)}>Add Room</NavLink>
+      <NavLink to="/my-listings" className={mobileNavLinkClass} onClick={() => setMenuOpen(false)}>My Listings</NavLink>
+      <NavLink to="/my-bookings" className={mobileNavLinkClass} onClick={() => setMenuOpen(false)}>My Bookings</NavLink>
+    </>
+  )
+
   return (
     <header className="sticky top-0 z-50 bg-white/90 backdrop-blur border-b border-slate-200 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
+        <div className="flex items-center justify-between h-16 gap-3">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 shrink-0">
             <div className="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center">
@@ -78,14 +101,14 @@ const Navbar = () => {
             <span className="text-xl font-bold text-indigo-600 tracking-tight">StudyNook</span>
           </Link>
 
-          {/* Desktop Nav */}
-          <nav className="hidden md:flex items-center gap-7">
+          {/* Desktop Nav — hidden on mobile/tablet (< lg) */}
+          <nav className="hidden lg:flex items-center gap-6 flex-1 ml-6">
             {publicLinks}
             {user && privateLinks}
           </nav>
 
           {/* Desktop Auth */}
-          <div className="hidden md:flex items-center gap-3">
+          <div className="hidden lg:flex items-center gap-3">
             {user ? (
               <div className="relative" ref={dropdownRef}>
                 <button
@@ -144,61 +167,86 @@ const Navbar = () => {
             )}
           </div>
 
-          {/* Mobile hamburger */}
-          <button
-            onClick={() => setMenuOpen((o) => !o)}
-            className="md:hidden p-2 rounded-lg text-slate-600 hover:bg-slate-100 transition"
-            aria-label="Toggle menu"
-          >
-            {menuOpen ? (
-              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            ) : (
-              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
+          {/* Mobile: avatar (if logged in) + hamburger */}
+          <div className="lg:hidden flex items-center gap-2">
+            {user && (
+              <img
+                src={user.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.displayName || user.email)}&background=4f46e5&color=fff`}
+                alt="avatar"
+                className="w-8 h-8 rounded-full object-cover ring-2 ring-indigo-300"
+              />
             )}
-          </button>
+            <button
+              onClick={() => setMenuOpen((o) => !o)}
+              className="p-2 rounded-lg text-slate-600 hover:bg-slate-100 transition"
+              aria-label="Toggle menu"
+              aria-expanded={menuOpen}
+            >
+              {menuOpen ? (
+                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              ) : (
+                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+              )}
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* Mobile Menu */}
+      {/* Mobile / Tablet Menu (< lg) */}
       {menuOpen && (
-        <div className="md:hidden bg-white border-t border-slate-100 px-4 py-4 flex flex-col gap-3">
-          {publicLinks}
-          {user && privateLinks}
-          <hr className="border-slate-100" />
-          {user ? (
-            <>
-              <div className="flex items-center gap-3">
-                <img
-                  src={user.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.displayName || user.email)}&background=4f46e5&color=fff`}
-                  alt="avatar"
-                  className="w-9 h-9 rounded-full object-cover ring-2 ring-indigo-300"
-                />
-                <div>
-                  <p className="text-sm font-semibold text-slate-800">{user.displayName || 'User'}</p>
-                  <p className="text-xs text-slate-500 truncate">{user.email}</p>
+        <div className="lg:hidden bg-white border-t border-slate-100">
+          {/* Nav links */}
+          <div className="px-4 py-2">
+            {publicLinksMobile}
+            {user && privateLinksMobile}
+          </div>
+
+          {/* User section */}
+          <div className="px-4 py-3 border-t border-slate-100">
+            {user ? (
+              <div className="space-y-1">
+                {/* Identity row */}
+                <div className="flex items-center gap-3 py-2">
+                  <img
+                    src={user.photoURL || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.displayName || user.email)}&background=4f46e5&color=fff`}
+                    alt="avatar"
+                    className="w-9 h-9 rounded-full object-cover ring-2 ring-indigo-300 shrink-0"
+                  />
+                  <div className="min-w-0">
+                    <p className="text-sm font-semibold text-slate-800 truncate">{user.displayName || 'User'}</p>
+                    <p className="text-xs text-slate-500 truncate">{user.email}</p>
+                  </div>
                 </div>
+                <button
+                  onClick={handleLogout}
+                  className="w-full text-left py-2.5 text-sm font-medium text-red-500 hover:text-red-600 transition"
+                >
+                  Logout
+                </button>
               </div>
-              <Link to="/profile" onClick={() => setMenuOpen(false)} className="text-sm text-slate-600 hover:text-indigo-600 transition">
-                Profile
-              </Link>
-              <button onClick={handleLogout} className="text-left text-sm text-red-500 hover:text-red-600 transition">
-                Logout
-              </button>
-            </>
-          ) : (
-            <div className="flex flex-col gap-2">
-              <Link to="/login" onClick={() => setMenuOpen(false)} className="text-sm font-medium text-center border border-indigo-200 text-indigo-600 px-4 py-2 rounded-lg hover:bg-indigo-50 transition">
-                Login
-              </Link>
-              <Link to="/register" onClick={() => setMenuOpen(false)} className="text-sm font-medium text-center bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition">
-                Register
-              </Link>
-            </div>
-          )}
+            ) : (
+              <div className="flex flex-col gap-2 py-1">
+                <Link
+                  to="/login"
+                  onClick={() => setMenuOpen(false)}
+                  className="text-sm font-semibold text-center border border-indigo-200 text-indigo-600 px-4 py-2.5 rounded-xl hover:bg-indigo-50 transition"
+                >
+                  Login
+                </Link>
+                <Link
+                  to="/register"
+                  onClick={() => setMenuOpen(false)}
+                  className="text-sm font-semibold text-center bg-indigo-600 text-white px-4 py-2.5 rounded-xl hover:bg-indigo-700 transition"
+                >
+                  Register
+                </Link>
+              </div>
+            )}
+          </div>
         </div>
       )}
     </header>

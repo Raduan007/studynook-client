@@ -115,7 +115,7 @@ const BookingModal = ({ room, user, onClose, onBooked }) => {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center px-4 py-6"
+      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center sm:px-4 sm:py-6"
       role="dialog"
       aria-modal="true"
       aria-labelledby="booking-modal-title"
@@ -123,10 +123,14 @@ const BookingModal = ({ room, user, onClose, onBooked }) => {
       {/* Backdrop */}
       <div className="absolute inset-0 bg-black/40" onClick={onClose} />
 
-      {/* Panel */}
-      <div className="relative bg-white rounded-2xl shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto">
+      {/* Panel — bottom-sheet on mobile, centered dialog on sm+ */}
+      <div className="relative bg-white rounded-t-2xl sm:rounded-2xl shadow-xl w-full sm:max-w-md max-h-[92vh] sm:max-h-[90vh] overflow-y-auto">
+        {/* Handle bar (mobile only) */}
+        <div className="sm:hidden flex justify-center pt-3 pb-1">
+          <div className="w-10 h-1 rounded-full bg-slate-200" />
+        </div>
         {/* Header */}
-        <div className="flex items-center justify-between px-6 pt-6 pb-4 border-b border-slate-100">
+        <div className="flex items-center justify-between px-4 sm:px-6 pt-4 sm:pt-6 pb-4 border-b border-slate-100">
           <div>
             <h2 id="booking-modal-title" className="text-lg font-bold text-slate-800">
               Book This Room
@@ -145,7 +149,7 @@ const BookingModal = ({ room, user, onClose, onBooked }) => {
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="p-6 space-y-5">
+        <form onSubmit={handleSubmit} className="p-4 sm:p-6 space-y-5">
           {/* Date */}
           <div>
             <label htmlFor="booking-date" className="block text-sm font-medium text-slate-700 mb-1.5">
@@ -237,7 +241,7 @@ const BookingModal = ({ room, user, onClose, onBooked }) => {
           </div>
 
           {/* Footer actions */}
-          <div className="flex gap-3 pt-1">
+          <div className="flex flex-col-reverse sm:flex-row gap-2 sm:gap-3 pt-1">
             <button
               type="button"
               onClick={onClose}
