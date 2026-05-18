@@ -10,8 +10,12 @@ const PrivateLayout = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <LoadingSpinner size="lg" />
+      <div className="min-h-screen flex flex-col">
+        <Navbar />
+        <main className="flex-1 flex items-center justify-center">
+          <LoadingSpinner size="xl" label="Checking authentication" />
+        </main>
+        <Footer />
       </div>
     )
   }

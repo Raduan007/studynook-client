@@ -40,6 +40,7 @@ const App = () => {
             <Route path="/rooms/:id" element={<RoomDetails />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="*" element={<NotFound />} />
           </Route>
 
           {/* Private routes */}
@@ -50,8 +51,6 @@ const App = () => {
             <Route path="/my-bookings" element={<MyBookings />} />
           </Route>
 
-          {/* 404 */}
-          <Route path="*" element={<NotFound />} />
         </Routes>
       </AuthProvider>
     </BrowserRouter>
