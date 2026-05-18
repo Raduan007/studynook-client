@@ -5,6 +5,7 @@ import toast from 'react-hot-toast'
 import { useAuth } from '../contexts/AuthContext'
 import useTitle from '../hooks/useTitle'
 import LoadingSpinner from '../components/LoadingSpinner'
+import BookingModal from '../components/BookingModal'
 
 const API = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000'
 
@@ -105,6 +106,7 @@ const RoomDetails = () => {
   const [error, setError] = useState(null)
 
   const [booking, setBooking] = useState(false)
+  const [showBookingModal, setShowBookingModal] = useState(false)
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [deleting, setDeleting] = useState(false)
 
@@ -135,23 +137,12 @@ const RoomDetails = () => {
   const isOwner =
     user && room && (room.ownerEmail === user.email || room.ownerUid === user.uid)
 
-  // ── Book Now ───────────────────────────────────────────────────────────────
-  const handleBook = async () => {
-    if (!user) return // guard — button won't be shown for guests
-    setBooking(true)
-    try {
-      await axios.post(`${API}/bookings`, {
-        roomId: room.id || room._id,
-        roomName: room.name,
-        userEmail: user.email,
-        userName: user.displayName,
-      })
-      toast.success('Room booked successfully!')
-    } catch (err) {
-      toast.error(err.response?.data?.message || 'Booking failed. Please try again.')
-    } finally {
-      setBooking(false)
-    }
+  // ── Booking bumper (optimistic update after successful booking) ────────────
+  const handleBooked = () => {
+    setRoom((prev) => ({
+      ...prev,
+      bookingCount: (prev.bookingCount ?? prev.totalBookings ?? 0) + 1,
+    }))
   }
 
   // ── Delete room ────────────────────────────────────────────────────────────
@@ -212,6 +203,16 @@ const RoomDetails = () => {
           onConfirm={handleDelete}
           onCancel={() => setShowDeleteModal(false)}
           deleting={deleting}
+        />
+      )}
+
+      {/* Booking modal */}
+      {showBookingModal && (
+        <BookingModal
+          room={room}
+          user={user}
+          onClose={() => setShowBookingModal(false)}
+          onBooked={handleBooked}
         />
       )}
 
@@ -341,18 +342,12 @@ const RoomDetails = () => {
               {user ? (
                 <button
                   id="book-now-btn"
-                  onClick={handleBook}
-                  disabled={booking || isOwner}
+                  onClick={() => setShowBookingModal(true)}
+                  disabled={isOwner}
                   title={isOwner ? 'You own this room' : ''}
                   className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 rounded-xl transition disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm"
                 >
-                  {booking ? (
-                    <LoadingSpinner size="sm" className="border-white/30 border-t-white" />
-                  ) : isOwner ? (
-                    'Your Listing'
-                  ) : (
-                    'Book Now'
-                  )}
+                  {isOwner ? 'Your Listing' : 'Book Now'}
                 </button>
               ) : (
                 <Link
