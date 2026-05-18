@@ -1,40 +1,71 @@
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import { signInWithEmailAndPassword, getAuth } from 'firebase/auth'
-import app, { isConfigured } from '../firebase/firebase.config'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
+import { useAuth } from '../contexts/AuthContext'
 import toast from 'react-hot-toast'
 import useTitle from '../hooks/useTitle'
+import LoadingSpinner from '../components/LoadingSpinner'
+
+// ── Google colour icon ────────────────────────────────────────────────────────
+const GoogleIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true">
+    <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z" />
+    <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z" />
+    <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z" />
+    <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z" />
+  </svg>
+)
 
 const Login = () => {
   useTitle('Login')
   const navigate = useNavigate()
+  const location = useLocation()
+  const { signIn, signInWithGoogle } = useAuth()
+
+  // Redirect to the page the user was trying to visit, or home
+  const from = location.state?.from?.pathname || '/'
+
   const [form, setForm] = useState({ email: '', password: '' })
   const [loading, setLoading] = useState(false)
+  const [googleLoading, setGoogleLoading] = useState(false)
 
-  const handleChange = (e) => setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }))
+  const handleChange = (e) =>
+    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }))
 
+  // ── Email / password sign-in ─────────────────────────────────────────────
   const handleSubmit = async (e) => {
     e.preventDefault()
     setLoading(true)
-    if (!isConfigured || !app) {
-      toast.error('Firebase not configured. Please add your credentials to .env')
-      setLoading(false)
-      return
-    }
     try {
-      await signInWithEmailAndPassword(getAuth(app), form.email, form.password)
+      await signIn(form.email, form.password)
       toast.success('Welcome back!')
-      navigate('/')
+      navigate(from, { replace: true })
     } catch (err) {
-      toast.error(err.message || 'Login failed')
+      toast.error(friendlyError(err.code) || err.message || 'Login failed')
     } finally {
       setLoading(false)
     }
   }
 
+  // ── Google sign-in ───────────────────────────────────────────────────────
+  const handleGoogle = async () => {
+    setGoogleLoading(true)
+    try {
+      await signInWithGoogle()
+      toast.success('Signed in with Google!')
+      navigate(from, { replace: true })
+    } catch (err) {
+      if (err.code !== 'auth/popup-closed-by-user') {
+        toast.error(friendlyError(err.code) || 'Google sign-in failed')
+      }
+    } finally {
+      setGoogleLoading(false)
+    }
+  }
+
   return (
-    <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center px-4 py-12 bg-gradient-to-br from-indigo-50 to-cyan-50">
-      <div className="w-full max-w-md bg-white rounded-2xl shadow-lg border border-slate-100 p-8">
+    <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center px-4 py-12 bg-slate-50">
+      <div className="w-full max-w-md bg-white rounded-2xl shadow-sm border border-slate-100 p-8">
+        {/* Header */}
         <div className="text-center mb-8">
           <div className="w-12 h-12 rounded-xl bg-indigo-600 flex items-center justify-center mx-auto mb-4">
             <svg className="w-7 h-7 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -45,9 +76,30 @@ const Login = () => {
           <p className="text-slate-500 text-sm mt-1">Sign in to your StudyNook account</p>
         </div>
 
+        {/* Google button */}
+        <button
+          type="button"
+          onClick={handleGoogle}
+          disabled={googleLoading || loading}
+          className="w-full flex items-center justify-center gap-3 border border-slate-200 rounded-lg px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 transition disabled:opacity-60 disabled:cursor-not-allowed mb-5"
+        >
+          {googleLoading ? <LoadingSpinner size="sm" /> : <GoogleIcon />}
+          Continue with Google
+        </button>
+
+        {/* Divider */}
+        <div className="flex items-center gap-3 mb-5">
+          <hr className="flex-1 border-slate-200" />
+          <span className="text-xs text-slate-400 font-medium">or</span>
+          <hr className="flex-1 border-slate-200" />
+        </div>
+
+        {/* Email / password form */}
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
-            <label htmlFor="login-email" className="block text-sm font-medium text-slate-700 mb-1.5">Email</label>
+            <label htmlFor="login-email" className="block text-sm font-medium text-slate-700 mb-1.5">
+              Email
+            </label>
             <input
               id="login-email"
               type="email"
@@ -59,11 +111,11 @@ const Login = () => {
               className="w-full px-4 py-2.5 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm transition"
             />
           </div>
+
           <div>
-            <div className="flex items-center justify-between mb-1.5">
-              <label htmlFor="login-password" className="block text-sm font-medium text-slate-700">Password</label>
-              <button type="button" className="text-xs text-indigo-600 hover:underline">Forgot password?</button>
-            </div>
+            <label htmlFor="login-password" className="block text-sm font-medium text-slate-700 mb-1.5">
+              Password
+            </label>
             <input
               id="login-password"
               type="password"
@@ -75,24 +127,38 @@ const Login = () => {
               className="w-full px-4 py-2.5 rounded-lg border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm transition"
             />
           </div>
+
           <button
             type="submit"
-            disabled={loading}
+            id="login-submit"
+            disabled={loading || googleLoading}
             className="w-full bg-indigo-600 text-white font-semibold py-2.5 rounded-lg hover:bg-indigo-700 transition disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
-            {loading ? (
-              <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-            ) : 'Sign In'}
+            {loading ? <LoadingSpinner size="sm" className="border-white/30 border-t-white" /> : 'Sign In'}
           </button>
         </form>
 
         <p className="text-center text-sm text-slate-500 mt-6">
           Don&apos;t have an account?{' '}
-          <Link to="/register" className="text-indigo-600 font-medium hover:underline">Register</Link>
+          <Link to="/register" className="text-indigo-600 font-medium hover:underline">
+            Register
+          </Link>
         </p>
       </div>
     </div>
   )
+}
+
+// Map Firebase error codes to readable messages
+const friendlyError = (code) => {
+  const map = {
+    'auth/user-not-found': 'No account found with this email.',
+    'auth/wrong-password': 'Incorrect password. Please try again.',
+    'auth/invalid-credential': 'Invalid email or password.',
+    'auth/too-many-requests': 'Too many attempts. Please try again later.',
+    'auth/network-request-failed': 'Network error. Check your connection.',
+  }
+  return map[code] ?? null
 }
 
 export default Login

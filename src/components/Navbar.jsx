@@ -1,19 +1,16 @@
 import { useState } from 'react'
 import { Link, NavLink } from 'react-router-dom'
-import { signOut, getAuth } from 'firebase/auth'
-import app, { isConfigured } from '../firebase/firebase.config'
 import { useAuth } from '../contexts/AuthContext'
 import toast from 'react-hot-toast'
 
 const Navbar = () => {
-  const { user } = useAuth()
+  const { user, logout } = useAuth()
   const [menuOpen, setMenuOpen] = useState(false)
   const [dropdownOpen, setDropdownOpen] = useState(false)
 
   const handleLogout = async () => {
-    if (!isConfigured || !app) return
     try {
-      await signOut(getAuth(app))
+      await logout()
       toast.success('Logged out successfully')
     } catch {
       toast.error('Logout failed')
