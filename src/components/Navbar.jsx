@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link, NavLink } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import toast from 'react-hot-toast'
@@ -7,6 +7,19 @@ const Navbar = () => {
   const { user, logout } = useAuth()
   const [menuOpen, setMenuOpen] = useState(false)
   const [dropdownOpen, setDropdownOpen] = useState(false)
+  const dropdownRef = useRef(null)
+
+  // Close desktop dropdown on outside click
+  useEffect(() => {
+    if (!dropdownOpen) return
+    const handler = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setDropdownOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handler)
+    return () => document.removeEventListener('mousedown', handler)
+  }, [dropdownOpen])
 
   const handleLogout = async () => {
     try {
@@ -74,7 +87,7 @@ const Navbar = () => {
           {/* Desktop Auth */}
           <div className="hidden md:flex items-center gap-3">
             {user ? (
-              <div className="relative">
+              <div className="relative" ref={dropdownRef}>
                 <button
                   onClick={() => setDropdownOpen((o) => !o)}
                   className="flex items-center gap-2 focus:outline-none"
