@@ -44,7 +44,10 @@ export const AuthProvider = ({ children }) => {
       async (currentUser) => {
         if (currentUser) {
           try {
-            await axios.post('/auth/login', { email: currentUser.email })
+            await axios.post('/auth/login', { 
+              email: currentUser.email,
+              uid: currentUser.uid 
+            })
           } catch (err) {
             console.error('Failed to set JWT cookie:', err)
           }
