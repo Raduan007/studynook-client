@@ -1,5 +1,8 @@
 import { Link } from 'react-router-dom'
 
+// MongoDB ObjectId is a 24-character hex string
+const isValidMongoId = (id) => /^[a-f\d]{24}$/i.test(String(id ?? ''))
+
 const RoomCard = ({ room }) => {
   const {
     id,
@@ -90,12 +93,18 @@ const RoomCard = ({ room }) => {
 
         {/* CTA */}
         <div className="pt-1 mt-auto">
-          <Link
-            to={`/rooms/${roomId}`}
-            className="block w-full text-center text-sm font-semibold bg-indigo-600 text-white px-4 py-2.5 rounded-xl hover:bg-indigo-700 transition-colors"
-          >
-            View Details
-          </Link>
+          {isValidMongoId(roomId) ? (
+            <Link
+              to={`/rooms/${roomId}`}
+              className="block w-full text-center text-sm font-semibold bg-indigo-600 text-white px-4 py-2.5 rounded-xl hover:bg-indigo-700 transition-colors"
+            >
+              View Details
+            </Link>
+          ) : (
+            <span className="block w-full text-center text-sm font-semibold bg-slate-200 text-slate-400 px-4 py-2.5 rounded-xl cursor-not-allowed select-none">
+              View Details
+            </span>
+          )}
         </div>
       </div>
     </article>
