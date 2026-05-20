@@ -5,6 +5,7 @@ import toast from 'react-hot-toast'
 import { useAuth } from '../contexts/AuthContext'
 import useTitle from '../hooks/useTitle'
 import LoadingSpinner from '../components/LoadingSpinner'
+import { normalizeRoom } from '../api/normalizeRoom'
 
 // ── Delete confirmation modal ─────────────────────────────────────────────────
 const DeleteModal = ({ roomName, onConfirm, onCancel, deleting }) => (
@@ -212,7 +213,7 @@ const MyListings = () => {
     axios
       .get('/rooms', { params: { ownerEmail: user.email } })
       .then(({ data }) => {
-        if (!cancelled) setRooms(Array.isArray(data) ? data : [])
+        if (!cancelled) setRooms(Array.isArray(data) ? data.map(normalizeRoom) : [])
       })
       .catch((err) => {
         if (!cancelled) setError(err.response?.data?.message || err.message || 'Failed to load listings')

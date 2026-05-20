@@ -5,6 +5,7 @@ import toast from 'react-hot-toast'
 import { useAuth } from '../contexts/AuthContext'
 import useTitle from '../hooks/useTitle'
 import LoadingSpinner from '../components/LoadingSpinner'
+import { normalizeRoom } from '../api/normalizeRoom'
 
 const AMENITY_OPTIONS = [
   'WiFi',
@@ -52,14 +53,15 @@ const EditRoom = () => {
       .get(`/rooms/${id}`)
       .then(({ data }) => {
         if (cancelled) return
+        const room = normalizeRoom(data)
         setForm({
-          name: data.name || '',
-          description: data.description || '',
-          image: data.image || '',
-          floor: data.floor ?? '',
-          capacity: data.capacity ?? '',
-          hourlyRate: data.hourlyRate ?? '',
-          amenities: Array.isArray(data.amenities) ? data.amenities : [],
+          name: room.name || '',
+          description: room.description || '',
+          image: room.image || '',
+          floor: room.floor ?? '',
+          capacity: room.capacity ?? '',
+          hourlyRate: room.hourlyRate ?? '',
+          amenities: Array.isArray(room.amenities) ? room.amenities : [],
         })
       })
       .catch((err) => {

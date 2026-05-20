@@ -6,6 +6,7 @@ import { useAuth } from '../contexts/AuthContext'
 import useTitle from '../hooks/useTitle'
 import LoadingSpinner from '../components/LoadingSpinner'
 import BookingModal from '../components/BookingModal'
+import { normalizeRoom } from '../api/normalizeRoom'
 
 // ── Delete confirmation modal ─────────────────────────────────────────────────
 const DeleteModal = ({ roomName, onConfirm, onCancel, deleting }) => (
@@ -119,7 +120,7 @@ const RoomDetails = () => {
     axios
       .get(`/rooms/${id}`)
       .then(({ data }) => {
-        if (!cancelled) setRoom(data)
+        if (!cancelled) setRoom(normalizeRoom(data))
       })
       .catch((err) => {
         if (!cancelled) setError(err.response?.data?.message || err.message || 'Failed to load room')

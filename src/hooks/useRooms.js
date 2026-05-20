@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import axios from '../api/axios'
+import { normalizeRoom } from '../api/normalizeRoom'
 
 /**
  * Fetches all rooms from the backend.
@@ -18,7 +19,7 @@ const useRooms = () => {
       setError(null)
       try {
         const { data } = await axios.get('/rooms')
-        if (!cancelled) setRooms(data)
+        if (!cancelled) setRooms(Array.isArray(data) ? data.map(normalizeRoom) : [])
       } catch (err) {
         if (!cancelled) setError(err.message || 'Failed to load rooms')
       } finally {
