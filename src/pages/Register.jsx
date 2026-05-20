@@ -212,10 +212,11 @@ const Register = () => {
 // Map Firebase error codes to readable messages
 const friendlyError = (code) => {
   const map = {
-    'auth/email-already-in-use': 'An account with this email already exists.',
+    'auth/email-already-in-use': 'This email is already registered.',
     'auth/invalid-email': 'Please enter a valid email address.',
-    'auth/weak-password': 'Password is too weak.',
+    'auth/weak-password': 'Password should be at least 6 characters.',
     'auth/network-request-failed': 'Network error. Check your connection.',
+    'auth/configuration-not-found': 'Firebase Auth is not enabled in your Firebase Console.',
     'auth/too-many-requests': 'Too many attempts. Please try again later.',
   }
   return map[code] ?? null

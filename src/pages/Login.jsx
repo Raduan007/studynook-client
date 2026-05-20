@@ -157,6 +157,7 @@ const friendlyError = (code) => {
     'auth/invalid-credential': 'Invalid email or password.',
     'auth/too-many-requests': 'Too many attempts. Please try again later.',
     'auth/network-request-failed': 'Network error. Check your connection.',
+    'auth/configuration-not-found': 'Firebase Auth is not enabled in your Firebase Console.',
   }
   return map[code] ?? null
 }
