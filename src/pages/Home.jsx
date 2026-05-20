@@ -4,75 +4,6 @@ import useRooms from '../hooks/useRooms'
 import RoomCard from '../components/RoomCard'
 import LoadingSpinner from '../components/LoadingSpinner'
 
-// ── Mock data (replace with real API call) ──────────────────────────────────
-const SAMPLE_ROOMS = [
-  {
-    id: '1',
-    name: 'The Quiet Corner',
-    description:
-      'A serene, private study room designed for deep focus. Floor-to-ceiling bookshelves, ergonomic seating, and perfect acoustics make this the ideal space for long study sessions.',
-    image: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&q=80',
-    floor: 2,
-    capacity: 4,
-    hourlyRate: 8,
-    amenities: ['WiFi', 'Whiteboard', 'AC', 'Projector'],
-  },
-  {
-    id: '2',
-    name: 'Collaborative Hub',
-    description:
-      'Spacious open room built for group work and brainstorming. Moveable furniture lets you reconfigure the layout to suit any team dynamic or project.',
-    image: 'https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=800&q=80',
-    floor: 3,
-    capacity: 12,
-    hourlyRate: 15,
-    amenities: ['WiFi', 'Whiteboard', 'TV Screen', 'Coffee Station', 'Locker'],
-  },
-  {
-    id: '3',
-    name: 'Solo Focus Pod',
-    description:
-      'A compact, distraction-free pod perfect for solo study. Soundproof panels and warm lighting keep your mind locked in, no matter what is happening outside.',
-    image: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=800&q=80',
-    floor: 1,
-    capacity: 1,
-    hourlyRate: 5,
-    amenities: ['WiFi', 'AC', 'Power Outlets'],
-  },
-  {
-    id: '4',
-    name: 'Sunrise Reading Room',
-    description:
-      'Floor-to-ceiling east-facing windows flood this room with natural morning light. Comfortable lounge chairs and a curated book collection create a calm reading atmosphere.',
-    image: 'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=800&q=80',
-    floor: 4,
-    capacity: 6,
-    hourlyRate: 10,
-    amenities: ['WiFi', 'Natural Light', 'Lounge Seating', 'AC'],
-  },
-  {
-    id: '5',
-    name: 'Tech Lab Suite',
-    description:
-      'Equipped with high-performance workstations, dual monitors, and ultra-fast internet, this room is ideal for developers, designers, and data scientists who need serious computing power.',
-    image: 'https://images.unsplash.com/photo-1531973576160-7125cd663d86?w=800&q=80',
-    floor: 2,
-    capacity: 8,
-    hourlyRate: 20,
-    amenities: ['WiFi', 'Workstations', 'Dual Monitors', 'Printer', 'AC'],
-  },
-  {
-    id: '6',
-    name: 'Garden View Lounge',
-    description:
-      'Study amid lush greenery. This semi-open room overlooks a landscaped garden, offering fresh air and a calming backdrop to keep stress at bay during long study marathons.',
-    image: 'https://images.unsplash.com/photo-1484101403633-562f891dc89a?w=800&q=80',
-    floor: 1,
-    capacity: 5,
-    hourlyRate: 7,
-    amenities: ['WiFi', 'Garden View', 'Lounge Seating', 'Snack Bar'],
-  },
-]
 
 // ── Why Choose StudyNook data ────────────────────────────────────────────────
 const WHY_ITEMS = [
@@ -162,8 +93,8 @@ const Home = () => {
 
   const { rooms: fetchedRooms, loading, error } = useRooms()
 
-  // Show up to 6 latest rooms; fall back to sample data during development
-  const rooms = (fetchedRooms.length > 0 ? fetchedRooms : SAMPLE_ROOMS).slice(0, 6)
+  // Show latest 6 rooms from the API
+  const rooms = fetchedRooms.slice(0, 6)
 
   return (
     <div>
@@ -232,20 +163,30 @@ const Home = () => {
             </Link>
           </div>
 
-          {/* Error banner */}
-          {error && (
-            <div className="mb-6 flex items-center gap-3 bg-red-50 border border-red-100 rounded-xl px-4 py-3 text-sm text-red-600">
-              <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
-              </svg>
-              Could not load latest rooms. Showing sample data.
-            </div>
-          )}
-
           {/* Grid */}
           {loading ? (
             <div className="flex justify-center py-24">
               <LoadingSpinner size="lg" label="Loading rooms" />
+            </div>
+          ) : error ? (
+            <div className="flex flex-col items-center py-24 text-center">
+              <div className="w-14 h-14 rounded-full bg-red-50 flex items-center justify-center mb-4">
+                <svg className="w-7 h-7 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+                </svg>
+              </div>
+              <p className="text-sm font-semibold text-slate-700 mb-1">Could not load rooms</p>
+              <p className="text-xs text-slate-400">{error}</p>
+            </div>
+          ) : rooms.length === 0 ? (
+            <div className="flex flex-col items-center py-24 text-center">
+              <div className="w-14 h-14 rounded-full bg-slate-100 flex items-center justify-center mb-4">
+                <svg className="w-7 h-7 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                </svg>
+              </div>
+              <p className="text-sm font-semibold text-slate-700 mb-1">No rooms listed yet</p>
+              <p className="text-xs text-slate-400">Be the first to add a study room!</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
