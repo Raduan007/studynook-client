@@ -1,7 +1,5 @@
 import { useEffect, useState } from 'react'
-import axios from 'axios'
-
-const API = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000'
+import axios from '../api/axios'
 
 /**
  * Fetches all rooms from the backend.
@@ -19,7 +17,7 @@ const useRooms = () => {
       setLoading(true)
       setError(null)
       try {
-        const { data } = await axios.get(`${API}/rooms`)
+        const { data } = await axios.get('/rooms')
         if (!cancelled) setRooms(data)
       } catch (err) {
         if (!cancelled) setError(err.message || 'Failed to load rooms')

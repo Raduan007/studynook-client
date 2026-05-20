@@ -1,9 +1,7 @@
 import { useEffect, useState } from 'react'
-import axios from 'axios'
+import axios from '../api/axios'
 import toast from 'react-hot-toast'
 import LoadingSpinner from './LoadingSpinner'
-
-const API = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000'
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -88,7 +86,7 @@ const BookingModal = ({ room, user, onClose, onBooked }) => {
 
     setLoading(true)
     try {
-      await axios.post(`${API}/bookings`, {
+      await axios.post('/bookings', {
         roomId: room.id || room._id,
         roomName: room.name,
         userEmail: user.email,

@@ -1,12 +1,10 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import axios from 'axios'
+import axios from '../api/axios'
 import toast from 'react-hot-toast'
 import { useAuth } from '../contexts/AuthContext'
 import useTitle from '../hooks/useTitle'
 import LoadingSpinner from '../components/LoadingSpinner'
-
-const API = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000'
 
 // ── Status config ─────────────────────────────────────────────────────────────
 const STATUS = {
@@ -235,7 +233,7 @@ const MyBookings = () => {
     setError(null)
 
     axios
-      .get(`${API}/bookings`, { params: { email: user.email } })
+      .get('/bookings', { params: { email: user.email } })
       .then(({ data }) => {
         if (!cancelled) setBookings(Array.isArray(data) ? data : [])
       })
@@ -254,7 +252,7 @@ const MyBookings = () => {
     if (!cancelTarget) return
     setCancelling(true)
     try {
-      await axios.patch(`${API}/bookings/${cancelTarget.id || cancelTarget._id}/cancel`)
+      await axios.patch(`/bookings/${cancelTarget.id || cancelTarget._id}/cancel`)
       // Optimistically update status in the list
       setBookings((prev) =>
         prev.map((b) =>

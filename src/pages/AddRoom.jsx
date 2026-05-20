@@ -1,12 +1,10 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import axios from 'axios'
+import axios from '../api/axios'
 import toast from 'react-hot-toast'
 import { useAuth } from '../contexts/AuthContext'
 import useTitle from '../hooks/useTitle'
 import LoadingSpinner from '../components/LoadingSpinner'
-
-const API = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000'
 
 const AMENITY_OPTIONS = [
   'WiFi',
@@ -87,7 +85,7 @@ const AddRoom = () => {
         ownerUid: user.uid,
         ownerName: user.displayName,
       }
-      const { data } = await axios.post(`${API}/rooms`, payload)
+      const { data } = await axios.post('/rooms', payload)
       toast.success('Room listed successfully!')
       navigate(`/rooms/${data.id || data._id || ''}`)
     } catch (err) {

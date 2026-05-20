@@ -1,12 +1,10 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import axios from 'axios'
+import axios from '../api/axios'
 import toast from 'react-hot-toast'
 import { useAuth } from '../contexts/AuthContext'
 import useTitle from '../hooks/useTitle'
 import LoadingSpinner from '../components/LoadingSpinner'
-
-const API = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000'
 
 // ── Delete confirmation modal ─────────────────────────────────────────────────
 const DeleteModal = ({ roomName, onConfirm, onCancel, deleting }) => (
@@ -212,7 +210,7 @@ const MyListings = () => {
     setError(null)
 
     axios
-      .get(`${API}/rooms`, { params: { ownerEmail: user.email } })
+      .get('/rooms', { params: { ownerEmail: user.email } })
       .then(({ data }) => {
         if (!cancelled) setRooms(Array.isArray(data) ? data : [])
       })
@@ -232,7 +230,7 @@ const MyListings = () => {
     const roomId = deleteTarget.id || deleteTarget._id
     setDeleting(true)
     try {
-      await axios.delete(`${API}/rooms/${roomId}`)
+      await axios.delete(`/rooms/${roomId}`)
       setRooms((prev) => prev.filter((r) => (r.id || r._id) !== roomId))
       toast.success('Room deleted successfully.')
     } catch (err) {

@@ -1,12 +1,10 @@
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams, Link } from 'react-router-dom'
-import axios from 'axios'
+import axios from '../api/axios'
 import toast from 'react-hot-toast'
 import { useAuth } from '../contexts/AuthContext'
 import useTitle from '../hooks/useTitle'
 import LoadingSpinner from '../components/LoadingSpinner'
-
-const API = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000'
 
 const AMENITY_OPTIONS = [
   'WiFi',
@@ -51,7 +49,7 @@ const EditRoom = () => {
   useEffect(() => {
     let cancelled = false
     axios
-      .get(`${API}/rooms/${id}`)
+      .get(`/rooms/${id}`)
       .then(({ data }) => {
         if (cancelled) return
         setForm({
@@ -101,7 +99,7 @@ const EditRoom = () => {
         capacity: Number(form.capacity),
         hourlyRate: Number(form.hourlyRate),
       }
-      await axios.put(`${API}/rooms/${id}`, payload)
+      await axios.put(`/rooms/${id}`, payload)
       toast.success('Room updated successfully!')
       navigate(`/rooms/${id}`)
     } catch (err) {

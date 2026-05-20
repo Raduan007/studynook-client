@@ -46,12 +46,17 @@
            focus-visible:outline-2 focus-visible:outline-offset-2;
   }
 
-  .btn-sm  { @apply px-4 py-2 text-xs rounded-lg; }
-  .btn-md  { @apply px-5 py-2.5; }
-  .btn-lg  { @apply px-7 py-3 text-base; }
+  .btn-sm  { @apply px-4 py-2 text-xs rounded-lg inline-flex items-center justify-center gap-2 font-semibold transition-all duration-150 disabled:opacity-60 disabled:cursor-not-allowed focus-visible:outline-2 focus-visible:outline-offset-2; }
+  .btn-md  { @apply px-5 py-2.5 inline-flex items-center justify-center gap-2 font-semibold text-sm rounded-xl transition-all duration-150 disabled:opacity-60 disabled:cursor-not-allowed focus-visible:outline-2 focus-visible:outline-offset-2; }
+  .btn-lg  { @apply px-7 py-3 text-base inline-flex items-center justify-center gap-2 font-semibold rounded-xl transition-all duration-150 disabled:opacity-60 disabled:cursor-not-allowed focus-visible:outline-2 focus-visible:outline-offset-2; }
 
   .btn-primary {
-    @apply btn btn-md
+    @apply inline-flex items-center justify-center gap-2
+           font-semibold text-sm rounded-xl
+           transition-all duration-150
+           disabled:opacity-60 disabled:cursor-not-allowed
+           focus-visible:outline-2 focus-visible:outline-offset-2
+           px-5 py-2.5
            bg-indigo-600 text-white
            hover:bg-indigo-700 active:bg-indigo-800
            shadow-sm hover:shadow-md
@@ -59,7 +64,12 @@
   }
 
   .btn-secondary {
-    @apply btn btn-md
+    @apply inline-flex items-center justify-center gap-2
+           font-semibold text-sm rounded-xl
+           transition-all duration-150
+           disabled:opacity-60 disabled:cursor-not-allowed
+           focus-visible:outline-2 focus-visible:outline-offset-2
+           px-5 py-2.5
            bg-white text-slate-700
            border border-slate-200
            hover:bg-slate-50 hover:border-slate-300
@@ -68,7 +78,12 @@
   }
 
   .btn-danger {
-    @apply btn btn-md
+    @apply inline-flex items-center justify-center gap-2
+           font-semibold text-sm rounded-xl
+           transition-all duration-150
+           disabled:opacity-60 disabled:cursor-not-allowed
+           focus-visible:outline-2 focus-visible:outline-offset-2
+           px-5 py-2.5
            bg-red-500 text-white
            hover:bg-red-600 active:bg-red-700
            shadow-sm hover:shadow-md
@@ -76,7 +91,12 @@
   }
 
   .btn-ghost {
-    @apply btn btn-md
+    @apply inline-flex items-center justify-center gap-2
+           font-semibold text-sm rounded-xl
+           transition-all duration-150
+           disabled:opacity-60 disabled:cursor-not-allowed
+           focus-visible:outline-2 focus-visible:outline-offset-2
+           px-5 py-2.5
            text-indigo-600
            hover:bg-indigo-50
            focus-visible:outline-indigo-400;
@@ -92,7 +112,9 @@
 
   /* Lift effect for clickable cards */
   .card-lift {
-    @apply card hover:-translate-y-0.5 transition-all duration-200;
+    @apply bg-white rounded-2xl border border-slate-100
+           shadow-sm hover:shadow-md
+           hover:-translate-y-0.5 transition-all duration-200;
   }
 
   /* ── Form inputs ──────────────────────────────────────────────────────────── */
@@ -116,11 +138,11 @@
            px-2.5 py-1 rounded-full;
   }
 
-  .badge-indigo  { @apply badge bg-indigo-50  text-indigo-700; }
-  .badge-green   { @apply badge bg-emerald-50 text-emerald-700; }
-  .badge-amber   { @apply badge bg-amber-50   text-amber-700; }
-  .badge-slate   { @apply badge bg-slate-100  text-slate-500; }
-  .badge-red     { @apply badge bg-red-50     text-red-500; }
+  .badge-indigo  { @apply inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full bg-indigo-50  text-indigo-700; }
+  .badge-green   { @apply inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700; }
+  .badge-amber   { @apply inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full bg-amber-50   text-amber-700; }
+  .badge-slate   { @apply inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full bg-slate-100  text-slate-500; }
+  .badge-red     { @apply inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full bg-red-50     text-red-500; }
 
   /* ── Section typography ───────────────────────────────────────────────────── */
 

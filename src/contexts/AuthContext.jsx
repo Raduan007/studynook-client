@@ -10,6 +10,7 @@ import {
   updateProfile,
 } from 'firebase/auth'
 import app, { isConfigured } from '../firebase/firebase.config'
+import axios from '../api/axios'
 
 const AuthContext = createContext(null)
 
@@ -40,7 +41,20 @@ export const AuthProvider = ({ children }) => {
 
     const unsubscribe = onAuthStateChanged(
       auth,
-      (currentUser) => {
+      async (currentUser) => {
+        if (currentUser) {
+          try {
+            await axios.post('/jwt', { email: currentUser.email })
+          } catch (err) {
+            console.error('Failed to set JWT cookie:', err)
+          }
+        } else {
+          try {
+            await axios.post('/logout')
+          } catch (err) {
+            console.error('Failed to clear JWT cookie:', err)
+          }
+        }
         setUser(currentUser)
         setLoading(false)
       },
