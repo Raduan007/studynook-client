@@ -87,13 +87,13 @@ const BookingModal = ({ room, user, onClose, onBooked }) => {
     setLoading(true)
     try {
       await axios.post('/bookings', {
-        roomId: room.id || room._id,
+        room: room.id || room._id,
+        bookingDate: form.date,
+        startTime: `${form.date}T${form.startTime}:00`,
+        endTime: `${form.date}T${form.endTime}:00`,
         roomName: room.name,
         userEmail: user.email,
         userName: user.displayName,
-        date: form.date,
-        startTime: form.startTime,
-        endTime: form.endTime,
         totalHours: hours,
         totalCost: Number(total),
         note: form.note.trim(),
