@@ -134,7 +134,7 @@ const Login = () => {
             disabled={loading || googleLoading}
             className="btn-primary w-full py-2.5"
           >
-            {loading ? <LoadingSpinner size="sm" className="border-white/30 border-t-white" /> : 'Sign In'}
+            {loading ? <LoadingSpinner size="sm" className="border-white/30 border-t-white" /> : 'Login'}
           </button>
         </form>
 

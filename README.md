@@ -1,22 +1,19 @@
-# StudyNook
+# StudyNook – Library Study Room Booking
 
-StudyNook is a premium, responsive web application for finding and booking distraction-free study rooms. It provides an intuitive interface for both students looking for a quiet space, and room owners wanting to manage their listings.
+StudyNook is a full-stack web application where students and library users can list study rooms they control, and any registered user can browse, search, filter, and book those rooms for a specific date and time slot.
 
-## 🚀 Live Demo
+## 🚀 Live Site
 
-[Visit StudyNook Live](https://studynook-client-demo.vercel.app/) *(Placeholder Link - Update when deployed)*
+[Visit StudyNook Live](https://studynook-client.vercel.app/)
 
 ## ✨ Key Features
 
-- **Real-Time Booking System:** Instantly check room availability, select time slots (30-min intervals), and calculate pricing dynamically.
-- **Robust Authentication:** Secure email/password and Google OAuth sign-in powered by Firebase.
-- **Owner Dashboards:** Dedicated private routes for room owners to manage their listings (`/my-listings`) and for users to track reservations (`/my-bookings`).
-- **Advanced Filtering:** Browse and filter rooms by floor, capacity, price, and available amenities instantly.
-- **Optimized UX:** 
-  - Sub-second UI updates via optimistic rendering.
-  - Seamless responsive design (Bottom-sheet modals on mobile, centered dialogs on desktop).
-  - Toast notifications and inline validation.
-  - Complete skeleton loading states avoiding layout shifts.
+- **Smart Room Booking:** Select a date and hourly time slots (08:00–20:00), with automatic conflict detection to prevent double-bookings.
+- **Secure JWT Authentication:** Email/password and Google OAuth sign-in via Firebase, with tokens stored in HTTP-only cookies for maximum security.
+- **Room Management Dashboard:** Room owners can list, edit, and delete their own study rooms from a private `/my-listings` dashboard.
+- **My Bookings Dashboard:** Every user has a `/my-bookings` page to view, track status, and cancel upcoming reservations.
+- **Search & Filter:** Instantly search rooms by name and filter by amenities (Whiteboard, Projector, Wi-Fi, Power Outlets, etc.) with a responsive chip-based UI.
+- **Responsive Design:** Fully optimized for mobile, tablet, and desktop — with loading spinners, toast notifications, and a polished UI throughout.
 
 ## 🛠️ Technology Stack
 
@@ -25,18 +22,8 @@ StudyNook is a premium, responsive web application for finding and booking distr
 - **Routing:** React Router v6
 - **State & Auth:** React Context API + Firebase Authentication
 - **Data Fetching:** Axios
-
-## 📂 Project Structure
-
-```text
-src/
-├── components/   # Reusable UI parts (Navbar, Footer, RoomCard, Modals)
-├── contexts/     # Global state (AuthContext)
-├── firebase/     # Firebase configuration and initialization
-├── hooks/        # Custom React hooks (useRooms, useTitle)
-├── layouts/      # Public and Private route wrappers
-└── pages/        # Main route views (Home, Rooms, Dashboard, Auth)
-```
+- **Backend:** Node.js + Express + MongoDB (Mongoose)
+- **Auth Security:** JWT stored in HTTP-only cookies
 
 ## 💻 Running Locally
 
@@ -52,7 +39,7 @@ src/
    ```
 
 3. **Set up Environment Variables**
-   Create a `.env.local` file in the root directory and add your backend and Firebase configurations:
+   Create a `.env.local` file in the root directory:
    ```env
    VITE_API_BASE_URL=http://localhost:5000
    VITE_FIREBASE_API_KEY=your_api_key
@@ -70,9 +57,6 @@ src/
 
 ## 🚀 Deployment
 
-This project is configured out-of-the-box for seamless Single Page Application (SPA) deployment to major providers. We have included routing rewrite rules for:
+Configured for SPA deployment with routing rewrite rules for:
 - **Vercel** (`vercel.json`)
-- **Netlify / Cloudflare** (`public/_redirects`)
 - **Firebase Hosting** (`firebase.json`)
-
-Simply link your repository to your preferred host and everything will route correctly!

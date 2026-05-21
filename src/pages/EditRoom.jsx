@@ -8,18 +8,12 @@ import LoadingSpinner from '../components/LoadingSpinner'
 import { normalizeRoom } from '../api/normalizeRoom'
 
 const AMENITY_OPTIONS = [
-  'WiFi',
-  'AC',
   'Whiteboard',
   'Projector',
-  'TV Screen',
-  'Printer',
-  'Coffee Station',
-  'Lounge Seating',
-  'Natural Light',
+  'Wi-Fi',
   'Power Outlets',
-  'Locker',
-  'Snack Bar',
+  'Quiet Zone',
+  'Air Conditioning',
 ]
 
 // ── Validation ────────────────────────────────────────────────────────────────

@@ -29,8 +29,7 @@ const Footer = () => {
               {[
                 { label: 'Home', to: '/' },
                 { label: 'Browse Rooms', to: '/rooms' },
-                { label: 'Add a Room', to: '/add-room' },
-                { label: 'My Bookings', to: '/my-bookings' },
+                { label: 'About', to: '/#about' },
               ].map(({ label, to }) => (
                 <li key={to}>
                   <Link to={to} className="text-slate-400 hover:text-indigo-400 transition-colors duration-200">

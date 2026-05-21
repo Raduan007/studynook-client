@@ -16,7 +16,14 @@ const STATUS = {
 
 const getStatus = (raw = '') => STATUS[raw.toLowerCase()] ?? { label: raw, cls: 'bg-slate-100 text-slate-500' }
 
-const canCancel = (raw = '') => ['confirmed', 'pending'].includes(raw.toLowerCase())
+// Cancel is allowed only when confirmed AND booking date is today or in the future
+const canCancel = (booking) => {
+  if (booking.status?.toLowerCase() !== 'confirmed') return false
+  const bookingDate = new Date(booking.bookingDate || booking.date || booking.startTime)
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+  return bookingDate >= today
+}
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 const fmt = (dateStr) => {
@@ -98,7 +105,7 @@ const EmptyState = () => (
 // ── Booking card ──────────────────────────────────────────────────────────────
 const BookingCard = ({ booking, onCancelClick }) => {
   const status = getStatus(booking.status)
-  const cancellable = canCancel(booking.status)
+  const cancellable = canCancel(booking)
 
   return (
     <div className="card overflow-hidden flex flex-col sm:flex-row">
@@ -252,7 +259,7 @@ const MyBookings = () => {
     if (!cancelTarget) return
     setCancelling(true)
     try {
-      await axios.put(`/bookings/${cancelTarget.id || cancelTarget._id}/cancel`)
+      await axios.patch(`/bookings/${cancelTarget.id || cancelTarget._id}/cancel`)
       // Optimistically update status in the list
       setBookings((prev) =>
         prev.map((b) =>

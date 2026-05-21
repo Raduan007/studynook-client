@@ -60,7 +60,7 @@ const ErrorState = ({ message }) => (
 
 // ── Page ──────────────────────────────────────────────────────────────────────
 const Rooms = () => {
-  useTitle('Browse Rooms')
+  useTitle('Available Rooms')
 
   const { rooms, loading, error } = useRooms()
 

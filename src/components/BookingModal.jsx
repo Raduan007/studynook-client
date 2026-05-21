@@ -23,13 +23,11 @@ const hoursBetween = (start, end) => {
   return diff > 0 ? diff : 0
 }
 
-// ── Time slot options ─────────────────────────────────────────────────────────
-const TIME_SLOTS = Array.from({ length: 29 }, (_, i) => {
-  const totalMins = 7 * 60 + i * 30   // 07:00 to 21:00
-  const h = Math.floor(totalMins / 60)
-  const m = totalMins % 60
-  const value = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`
-  const label = new Date(0, 0, 0, h, m).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+// ── Time slot options — hourly 08:00 to 20:00 ────────────────────────────────
+const TIME_SLOTS = Array.from({ length: 13 }, (_, i) => {
+  const h = 8 + i   // 08 to 20
+  const value = `${String(h).padStart(2, '0')}:00`
+  const label = new Date(0, 0, 0, h, 0).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
   return { value, label }
 })
 
@@ -180,7 +178,7 @@ const BookingModal = ({ room, user, onClose, onBooked }) => {
                 className={inputClass}
               >
                 <option value="">Select</option>
-                {TIME_SLOTS.map(({ value, label }) => (
+                {TIME_SLOTS.slice(0, -1).map(({ value, label }) => (
                   <option key={value} value={value}>{label}</option>
                 ))}
               </select>
@@ -198,7 +196,7 @@ const BookingModal = ({ room, user, onClose, onBooked }) => {
                 className={inputClass}
               >
                 <option value="">Select</option>
-                {TIME_SLOTS.map(({ value, label }) => (
+                {TIME_SLOTS.slice(1).filter(({ value }) => !form.startTime || value > form.startTime).map(({ value, label }) => (
                   <option key={value} value={value}>{label}</option>
                 ))}
               </select>

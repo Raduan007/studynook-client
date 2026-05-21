@@ -59,7 +59,7 @@ const Register = () => {
   const navigate = useNavigate()
   const { signUp, signInWithGoogle } = useAuth()
 
-  const [form, setForm] = useState({ name: '', email: '', password: '' })
+  const [form, setForm] = useState({ name: '', email: '', photoUrl: '', password: '' })
   const [loading, setLoading] = useState(false)
   const [googleLoading, setGoogleLoading] = useState(false)
 
@@ -78,9 +78,9 @@ const Register = () => {
 
     setLoading(true)
     try {
-      await signUp(form.name.trim(), form.email, form.password)
-      toast.success('Account created! Welcome to StudyNook 🎉')
-      navigate('/')
+      await signUp(form.name.trim(), form.email, form.password, form.photoUrl.trim())
+      toast.success('Registration successful! Please login.')
+      navigate('/login')
     } catch (err) {
       toast.error(friendlyError(err.code) || err.message || 'Registration failed')
     } finally {
@@ -171,6 +171,22 @@ const Register = () => {
           </div>
 
           <div>
+            <label htmlFor="reg-photo" className="form-label">
+              Photo URL <span className="text-red-400">*</span>
+            </label>
+            <input
+              id="reg-photo"
+              type="url"
+              name="photoUrl"
+              value={form.photoUrl}
+              onChange={handleChange}
+              required
+              placeholder="https://example.com/your-photo.jpg"
+              className="form-input"
+            />
+          </div>
+
+          <div>
             <label htmlFor="reg-password" className="form-label">
               Password
             </label>
@@ -194,7 +210,7 @@ const Register = () => {
             disabled={loading || googleLoading}
             className="btn-primary w-full py-2.5"
           >
-            {loading ? <LoadingSpinner size="sm" className="border-white/30 border-t-white" /> : 'Create Account'}
+            {loading ? <LoadingSpinner size="sm" className="border-white/30 border-t-white" /> : 'Register'}
           </button>
         </form>
 

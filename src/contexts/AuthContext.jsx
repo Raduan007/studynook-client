@@ -68,13 +68,16 @@ export const AuthProvider = ({ children }) => {
   }, [])
 
   // ── actions ──────────────────────────────────────────────────────────────
-  const signUp = async (name, email, password) => {
+  const signUp = async (name, email, password, photoUrl = '') => {
     const auth = getFirebaseAuth()
     if (!auth) throw new Error('Firebase not configured')
     const { user: newUser } = await createUserWithEmailAndPassword(auth, email, password)
-    await updateProfile(newUser, { displayName: name })
+    await updateProfile(newUser, {
+      displayName: name,
+      photoURL: photoUrl || null,
+    })
     // Sync the updated profile into state immediately
-    setUser({ ...newUser, displayName: name })
+    setUser({ ...newUser, displayName: name, photoURL: photoUrl || null })
     return newUser
   }
 
