@@ -67,7 +67,6 @@ export const AuthProvider = ({ children }) => {
     return unsubscribe
   }, [])
 
-  // ── actions ──────────────────────────────────────────────────────────────
   const signUp = async (name, email, password, photoUrl = '') => {
     const auth = getFirebaseAuth()
     if (!auth) throw new Error('Firebase not configured')
@@ -76,8 +75,24 @@ export const AuthProvider = ({ children }) => {
       displayName: name,
       photoURL: photoUrl || null,
     })
-    // Sync the updated profile into state immediately
-    setUser({ ...newUser, displayName: name, photoURL: photoUrl || null })
+    
+    // Save user info to backend database
+    try {
+      await axios.post('/auth/register', {
+        uid: newUser.uid,
+        name,
+        email,
+        photoURL: photoUrl || null,
+      })
+    } catch (err) {
+      console.error('Failed to save user in database:', err)
+      // Optionally handle this error, but we'll proceed for now
+    }
+
+    // The user requested NOT to be automatically logged in upon registration.
+    // Firebase auto-logs in, so we immediately sign them out here.
+    await signOut(auth)
+    
     return newUser
   }
 
@@ -92,6 +107,19 @@ export const AuthProvider = ({ children }) => {
     const auth = getFirebaseAuth()
     if (!auth) throw new Error('Firebase not configured')
     const { user: googleUser } = await signInWithPopup(auth, googleProvider)
+    
+    // Save/update user info to backend database
+    try {
+      await axios.post('/auth/register', {
+        uid: googleUser.uid,
+        name: googleUser.displayName,
+        email: googleUser.email,
+        photoURL: googleUser.photoURL || null,
+      })
+    } catch (err) {
+      console.error('Failed to save google user in database:', err)
+    }
+
     return googleUser
   }
 

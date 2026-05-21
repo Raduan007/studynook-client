@@ -133,13 +133,6 @@ const Navbar = () => {
                       <p className="text-sm font-semibold text-slate-800 truncate">{user.displayName || 'User'}</p>
                       <p className="text-xs text-slate-500 truncate">{user.email}</p>
                     </div>
-                    <Link
-                      to="/profile"
-                      onClick={() => setDropdownOpen(false)}
-                      className="block px-4 py-2 text-sm text-slate-700 hover:bg-indigo-50 hover:text-indigo-600 transition"
-                    >
-                      Profile
-                    </Link>
                     <button
                       onClick={handleLogout}
                       className="w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-red-50 transition"
