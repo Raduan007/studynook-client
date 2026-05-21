@@ -113,6 +113,7 @@ const RoomDetails = () => {
 
   // ── Fetch room ─────────────────────────────────────────────────────────────
   useEffect(() => {
+    window.scrollTo(0, 0)
     let cancelled = false
     setLoading(true)
     setError(null)
