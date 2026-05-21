@@ -211,7 +211,7 @@ const MyListings = () => {
     setError(null)
 
     axios
-      .get('/rooms', { params: { ownerEmail: user.email } })
+      .get('/rooms/my-rooms')
       .then(({ data }) => {
         if (!cancelled) setRooms(Array.isArray(data) ? data.map(normalizeRoom) : [])
       })
