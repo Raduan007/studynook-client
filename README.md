@@ -4,7 +4,7 @@ StudyNook is a full-stack web application where students and library users can l
 
 ## 🚀 Live Site
 
-[Visit StudyNook Live](https://studynook-client.vercel.app/)
+[Visit StudyNook Live](https://studynook-client-ten.vercel.app/)
 
 ## ✨ Key Features
 
