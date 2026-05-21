@@ -233,7 +233,7 @@ const MyBookings = () => {
     setError(null)
 
     axios
-      .get('/bookings', { params: { email: user.email } })
+      .get('/bookings/my-bookings', { params: { email: user.email } })
       .then(({ data }) => {
         if (!cancelled) setBookings(Array.isArray(data) ? data : [])
       })
@@ -252,7 +252,7 @@ const MyBookings = () => {
     if (!cancelTarget) return
     setCancelling(true)
     try {
-      await axios.patch(`/bookings/${cancelTarget.id || cancelTarget._id}/cancel`)
+      await axios.put(`/bookings/${cancelTarget.id || cancelTarget._id}/cancel`)
       // Optimistically update status in the list
       setBookings((prev) =>
         prev.map((b) =>
