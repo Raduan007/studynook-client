@@ -35,6 +35,15 @@ const fmt = (dateStr) => {
   }
 }
 
+const fmtTime = (dateStr) => {
+  if (!dateStr) return '—'
+  try {
+    return new Date(dateStr).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })
+  } catch {
+    return dateStr
+  }
+}
+
 // ── Cancel confirmation modal ─────────────────────────────────────────────────
 const CancelModal = ({ roomName, onConfirm, onCancel, cancelling }) => (
   <div
@@ -107,14 +116,32 @@ const BookingCard = ({ booking, onCancelClick }) => {
   const status = getStatus(booking.status)
   const cancellable = canCancel(booking)
 
+  const roomImage = booking.roomImage || booking.room?.image
+  const roomName = booking.roomName || booking.room?.title || booking.room?.name || 'Study Room'
+  const roomId = booking.roomId || booking.room?._id || booking.room?.id
+
+  // Calculate total hours
+  let totalHours = booking.totalHours
+  if (totalHours == null && booking.startTime && booking.endTime) {
+    const start = new Date(booking.startTime).getTime()
+    const end = new Date(booking.endTime).getTime()
+    totalHours = Math.max(0, (end - start) / (1000 * 60 * 60))
+  }
+
+  // Calculate total cost
+  let totalCost = booking.totalCost
+  if (totalCost == null && booking.room?.price && totalHours != null) {
+    totalCost = booking.room.price * totalHours
+  }
+
   return (
     <div className="card overflow-hidden flex flex-col sm:flex-row">
       {/* Room image */}
       <div className="shrink-0 w-full sm:w-36 h-36 sm:h-auto bg-slate-100 relative">
-        {booking.roomImage ? (
+        {roomImage ? (
           <img
-            src={booking.roomImage}
-            alt={booking.roomName}
+            src={roomImage}
+            alt={roomName}
             className="w-full h-full object-cover"
             loading="lazy"
           />
@@ -133,10 +160,10 @@ const BookingCard = ({ booking, onCancelClick }) => {
           {/* Room name → links to room */}
           <div>
             <Link
-              to={`/rooms/${booking.roomId}`}
+              to={`/rooms/${roomId}`}
               className="text-base font-semibold text-slate-800 hover:text-indigo-600 transition line-clamp-1"
             >
-              {booking.roomName || 'Study Room'}
+              {roomName}
             </Link>
             <p className="text-xs text-slate-400 mt-0.5">
               Booked on {fmt(booking.createdAt)}
@@ -149,13 +176,12 @@ const BookingCard = ({ booking, onCancelClick }) => {
           </span>
         </div>
 
-        {/* Meta row */}
         <div className="flex flex-wrap gap-x-5 gap-y-1 text-sm text-slate-500">
           <span className="flex items-center gap-1.5">
             <svg className="w-4 h-4 text-indigo-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3M3 11h18M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
             </svg>
-            {fmt(booking.date)}
+            {fmt(booking.bookingDate || booking.date || booking.startTime)}
           </span>
 
           {(booking.startTime || booking.endTime) && (
@@ -163,16 +189,16 @@ const BookingCard = ({ booking, onCancelClick }) => {
               <svg className="w-4 h-4 text-indigo-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6l4 2m6-2a10 10 0 11-20 0 10 10 0 0120 0z" />
               </svg>
-              {booking.startTime} – {booking.endTime}
+              {fmtTime(booking.startTime)} – {fmtTime(booking.endTime)}
             </span>
           )}
 
-          {booking.totalHours != null && (
+          {totalHours != null && (
             <span className="flex items-center gap-1.5">
               <svg className="w-4 h-4 text-indigo-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
               </svg>
-              {booking.totalHours} hr{booking.totalHours !== 1 ? 's' : ''}
+              {totalHours} hr{totalHours !== 1 ? 's' : ''}
             </span>
           )}
         </div>
@@ -187,7 +213,7 @@ const BookingCard = ({ booking, onCancelClick }) => {
         {/* Footer: cost + action */}
         <div className="flex items-center justify-between pt-1 mt-auto">
           <span className="text-base font-bold text-indigo-600">
-            {booking.totalCost != null ? `$${Number(booking.totalCost).toFixed(2)}` : '—'}
+            {totalCost != null ? `$${Number(totalCost).toFixed(2)}` : '—'}
           </span>
 
           {cancellable ? (
@@ -199,7 +225,7 @@ const BookingCard = ({ booking, onCancelClick }) => {
             </button>
           ) : (
             <Link
-              to={`/rooms/${booking.roomId}`}
+              to={`/rooms/${roomId}`}
               className="text-sm font-semibold text-indigo-600 hover:text-indigo-700 border border-indigo-200 hover:border-indigo-300 px-3.5 py-1.5 rounded-lg transition"
             >
               View Room
@@ -294,7 +320,7 @@ const MyBookings = () => {
       {/* Cancel confirmation modal */}
       {cancelTarget && (
         <CancelModal
-          roomName={cancelTarget.roomName}
+          roomName={cancelTarget.roomName || cancelTarget.room?.title || cancelTarget.room?.name || 'Study Room'}
           onConfirm={handleCancel}
           onCancel={() => setCancelTarget(null)}
           cancelling={cancelling}
